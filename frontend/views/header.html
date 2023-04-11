@@ -1,0 +1,20 @@
+<header ng-controller="HeaderController">
+    <nav>
+        <ul>
+            <li style="text-transform: capitalize;">{{loggedInUser.username}}</li>
+            <li><h5 ng-click="logout()">Logout</h5></li>
+            <li><i class="fa-solid fa-gear"></i></li>
+            <li>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Agent'">
+                    <img src="../../profile.webp" alt="avatar">
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Admin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'SuperAdmin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>

@@ -1,0 +1,108 @@
+<div class="view-container">
+    <div class="div-1">
+        <h3 ng-Class="{'redColor': (ticket.status === 'Closed'), 'blueColor': (ticket.status === 'In Progress'), 'greenColor': (ticket.status === 'Open'), 'sandbrownColor': (ticket.status === 'Escalated')}" class="card-heading-small">Open ({{openTickets.length}})</h3>
+        <div class="card-small-body">
+            <div class="ticket-card-small" ng-repeat="ticket in openTickets">
+                <div class="source-info-small">
+                    <i ng-if="ticket.source == 'Email'|| ticket.source == 'email'" class="fa-regular fa-envelope"></i>
+                    <i ng-if="ticket.source == 'chat' || ticket.source == 'Chat'" class="fa-regular fa-comment"></i>
+                    <i ng-if="ticket.source == 'manual'" class="fa-solid fa-person"></i>
+                    <i ng-if="ticket.source == 'call'" class="fa-solid fa-phone"></i>
+                </div>
+                <div class="ticket-info-small">
+                    <h3 id="ticketNumber"><a ui-sref="ticketDetails({id:ticket._id})">#{{$index + 1}}
+                            {{ticket.ticketSubject}}</a></h3>
+                    <div class="contact-details-small">
+                        <h5>{{ticket.reportedBy.name}}</h5>
+                    </div>
+                    <div class="ticket-status-small">
+                        <h5><span><i class="fa-regular fa-clock"></i></span> {{ticket.createdAt | amDateFormat:'DD MMM
+                            YYYY hh:mm A'}}</h5> 
+                    </div>
+                    <div>
+                        <h5>Due: <span am-time-ago="ticket.dueDateTime"></span></h5>
+                    </div>
+                </div>
+                <div class="contact-info-small">
+                    <img src="../../profile.webp" alt="Contact">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="div-2">
+        <h3 ng-Class="{'redColor': (ticket.status === 'Closed'), 'blueColor': (ticket.status === 'In Progress'), 'greenColor': (ticket.status === 'Open'), 'sandbrownColor': (ticket.status === 'Escalated')}" class="card-heading-small">Closed ({{closedTickets.length}})</h3>
+        <div class="ticket-card-small" ng-repeat="ticket in closedTickets">
+            <div class="source-info-small">
+                <i ng-if="ticket.source == 'Email'|| ticket.source == 'email'" class="fa-regular fa-envelope"></i>
+                <i ng-if="ticket.source == 'chat' || ticket.source == 'Chat'" class="fa-regular fa-comment"></i>
+                <i ng-if="ticket.source == 'manual'" class="fa-solid fa-person"></i>
+                <i ng-if="ticket.source == 'call'" class="fa-solid fa-phone"></i>
+            </div>
+            <div class="ticket-info-small">
+                <h3 id="ticketNumber"><a ui-sref="ticketDetails({id:ticket._id})">#{{$index + 1}}
+                        {{ticket.ticketSubject}}</a></h3>
+                <div class="contact-details-small">
+                    <h5>{{ticket.reportedBy.name}}</h5>
+                </div>
+                <div class="ticket-status-small">
+                    <h5><span><i class="fa-regular fa-clock"></i></span> {{ticket.createdAt | amDateFormat:'DD MMM YYYY
+                        hh:mm A'}}</h5>
+                </div>
+                <div>
+                    <h5>Due: <span am-time-ago="ticket.dueDateTime"></span></h5>
+                </div>
+
+            </div>
+            <div class="contact-info-small">
+                <img src="../../profile.webp" alt="Contact">
+            </div>
+        </div>
+
+    </div>
+    <div class="div-3">
+        <h3 ng-Class="{'redColor': (ticket.status === 'Closed'), 'blueColor': (ticket.status === 'In Progress'), 'greenColor': (ticket.status === 'Open'), 'sandbrownColor': (ticket.status === 'Escalated')}" class="card-heading-small">Escalated ({{escalatedTickets.length}})</h3>
+        <div class="ticket-card-small" ng-repeat="ticket in escalatedTickets">
+            <div class="source-info-small">
+                <i ng-if="ticket.source == 'Email'|| ticket.source == 'email'" class="fa-regular fa-envelope"></i>
+                <i ng-if="ticket.source == 'chat' || ticket.source == 'Chat'" class="fa-regular fa-comment"></i>
+                <i ng-if="ticket.source == 'manual'" class="fa-solid fa-person"></i>
+                <i ng-if="ticket.source == 'call'" class="fa-solid fa-phone"></i>
+            </div>
+            <div class="ticket-info-small">
+                <h3 id="ticketNumber"><a ui-sref="ticketDetails({id:ticket._id})">#{{$index + 1}}
+                        {{ticket.ticketSubject}}</a></h3>
+                <div class="contact-details-small">
+                    <h5>{{ticket.reportedBy.name}}</h5>
+                </div>
+                <div class="ticket-status-small">
+                    <h5><span><i class="fa-regular fa-clock"></i></span> {{ticket.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</h5>
+                </div>
+                <div>
+                    <h5>Due: <span am-time-ago="ticket.dueDateTime"></span></h5>
+                </div>
+
+            </div>
+            <div class="contact-info-small">
+                <img src="../../profile.webp" alt="Contact">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 
+<div class="page-buttons">
+    <button type="button" ng-click="previous()">Previous</button>
+    <span>...</span>
+    <button type="button" ng-click="next()">Next</button>
+</div> -->
+
+<nav aria-label="Page navigation example" style="margin-top: 10px; margin-bottom: 0;">
+    <ul class="pagination justify-content-center" style="margin-bottom: 0;">
+        <li class="page-item" ng-click="previous()">
+            <a style="color: black;" class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item"><a style="color: black;" class="page-link" href="#">{{currentPage}}</a></li>
+        <li class="page-item" ng-click="next()">
+            <a style="color: black;" class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>

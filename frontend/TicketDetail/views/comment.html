@@ -1,0 +1,12 @@
+<div class="comment-card-container">
+    <div class="comment-card" ng-repeat="comment in comments">
+        <div class="info">
+            <h3 style="text-transform: capitalize;">{{comment.commentedBy.username}}</h3>
+            <h5>{{comment.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</h5>
+        </div>
+        <div class="msg">
+            <p>{{comment.comment}}</p>
+            <h5>Tag: {{comment.commentReason}}</h5>
+        </div>
+    </div>
+</div>

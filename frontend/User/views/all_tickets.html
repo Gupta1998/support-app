@@ -1,0 +1,42 @@
+<div class="card-container">
+    <div class="ticket-card" ng-repeat="ticket in tickets | filter: search" ng-init="$index = (ticketCurrPage-1) * ticketItemsPerPage + $index" ng-class="{'selectedClose': (ticket.status === 'Closed'), 'selectedEscalate': (ticket.status === 'Escalated'), 'selectedProgress': (ticket.status === 'In Progress'), 'selectedOpen': (ticket.status === 'Open')}">
+        <div class="source-info">
+            <i ng-if="ticket.source == 'Email'|| ticket.source == 'email'" class="fa-regular fa-envelope"></i>
+            <i ng-if="ticket.source == 'chat' || ticket.source == 'Chat'" class="fa-regular fa-comment"></i>
+            <i ng-if="ticket.source == 'manual'" class="fa-solid fa-person"></i>
+            <i ng-if="ticket.source == 'call'" class="fa-solid fa-phone"></i>
+        </div>
+        <div class="ticket-info">
+            <h3 id="ticketNumber"><a ui-sref="ticketDetails({id:ticket._id})">#{{$index + 1}}
+                    {{ticket.ticketSubject}}</a></h3>
+            <div class="contact-details">
+                <h5>{{ticket.reportedBy.name}}</h5>
+                <h5>{{ticket.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</h5>
+                <h5>Due: <span am-time-ago="ticket.dueDateTime"></span></h5>
+            </div>
+        </div>
+        <!-- <div class="tick">
+            <span ng-click="accept(ticket)" ng-show="!ticket.accepted"><i class="fa-solid fa-check"></i></span>
+            <span ng-click="reject(ticket)" ng-show="!ticket.accepted"><i class="fa-solid fa-xmark"></i></span>
+        </div> -->
+        <div style="width: 8%; display: flex; align-items: center; justify-content: space-around;">
+            <a class="fileTag" href='{{ticket.attachment.fileUrl}}' target="_blank"
+                style="color: #333333; text-decoration: none; margin-top: 5px;"><i
+                    class="fa-solid fa-file"></i>({{ticket.attachment.fileUrl ? 1:0}})</a>
+        </div>
+        <div class="ticket-details">
+            <h5 class="status"
+                ng-Class="{'redColor': (ticket.status === 'Closed'), 'blueColor': (ticket.status === 'In Progress'), 'greenColor': (ticket.status === 'Open'), 'sandbrownColor': (ticket.status === 'Escalated')}">
+                {{ticket.status}}</h5>
+        </div>
+        <!-- <div class="contact-info">
+            <img src="../../profile.webp" alt="Contact">
+        </div> -->
+    </div>
+</div>
+
+<div class="page-buttons">
+    <button ng-click="previous()">Previous</button>
+    <span>...</span>
+    <button ng-click="next()">Next</button>
+</div>

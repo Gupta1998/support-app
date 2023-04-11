@@ -1,0 +1,30 @@
+<div>
+    <!-- <div class="home-title" ng-if="">
+        <h2>Welcome back {{}}</h2>
+    </div> -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in users">
+                    <td>{{user.firstName}}</td>
+                    <td>{{user.lastName}}</td>
+                    <td>{{user.email}}</td>
+                    <td>
+                        <span class="edit" ng-click="edit(user)"><i class="fas fa-pencil-alt"></i></span>
+                        <span class="delete" ng-click="delete(user)"><i class="fas fa-times"></i></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <button ng-click="logout()">Logout</button>
+</div>

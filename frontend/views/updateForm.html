@@ -1,0 +1,62 @@
+<div ng-controller="UpdateUser" class="form-container">
+    <h2>Update User</h2>
+    <form name="form" class="form" ng-submit="updateUser()" novalidate>
+        <div class="form-group">
+            <label>First Name</label>
+            <input type="text" ng-model="user.firstName" name="firstName" ng-required="true"  ng-change="change()" name-directive />
+        </div>
+        <div ng-show="form.$submitted || form.firstName.$touched" class="error">
+            <span ng-show="form.firstName.$error.required">Please enter your first name.</span>
+            <span ng-show="!form.firstName.$valid">Name cannot contain special charaters</span>
+        </div>
+        <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" ng-model="user.lastName" name="lastName" ng-required="true" name-directive />
+        </div>
+        <div ng-show="form.$submitted || form.lastName.$touched" class="error">
+            <span ng-show="form.lastName.$error.required">Please enter your last name.</span>
+            <span ng-show="!form.lastName.$valid">Name cannot contain special charaters</span>
+        </div>
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" ng-model="user.username" name="username" ng-required="true" />
+        </div>
+        <div ng-show="form.$submitted || form.username.$touched" class="error">
+            <span ng-show="form.username.$error.required">Please enter your username.</span>
+            <!-- <span ng-show="!form.username.$valid">Name cannot contain special charaters</span> -->
+        </div>
+        <div class="form-group">
+            <label>E-mail</label>
+            <input type="text" ng-model="user.email" name="email" ng-required="true" email-directive />
+        </div>
+        <div ng-show="form.$submitted || form.email.$touched" class="error">
+            <span ng-show="form.email.$error.required">Please enter your email.</span>
+            <span ng-show="!form.email.$valid">This is not a valid email.</span>
+        </div>
+        <div class="form-group">
+            <label>Mobile</label>
+            <input type="text" ng-model="user.contactNo" name="contactNo" mobile-directive />
+        </div>
+        <div ng-show="form.$submitted || form.contactNo.$touched" class="error">
+            <span ng-show="form.contactNo.$error.required">Please enter contactNo number.</span>
+            <span ng-show="!form.contactNo.$valid">This is not a valid Mobile number.</span>
+        </div>
+        <div class="form-group">
+            <label>New Password</label>
+            <input type="password" ng-model="user.password" name="password" ng-required="true" password-directive />
+        </div>
+        <div ng-show="form.$submitted || form.password.$touched" class="error">
+            <span ng-show="form.password.$error.required">Please enter password</span>
+            <span ng-show="!form.password.$valid">Password must contain 6-16 characters and one special
+                character.</span>
+        </div>
+        <input class="submit-Btn" type="submit" value="Update" ng-disabled="
+                !form.firstName.$valid || 
+                !form.lastName.$valid || 
+                !form.username.$valid || 
+                !form.email.$valid || 
+                !form.contactNo.$valid || 
+                !form.password.$valid
+            " />
+    </form>
+</div>

@@ -1,0 +1,21 @@
+<div ng-controller="NotificationController">
+    <h1>Notifications</h1>
+
+    <ul>
+        <li ng-repeat="notification in notifications">
+            <p><strong>{{ notification.from }}</strong> sent you a message:</p>
+            <p>{{ notification.message }}</p>
+            <button ng-click="markAsRead(notification._id)">Mark as read</button>
+        </li>
+    </ul>
+
+    <form>
+        <label>To:</label>
+        <input type="text" ng-model="toUser">
+
+        <label>Message:</label>
+        <input type="text" ng-model="message">
+
+        <button ng-click="sendNotification()">Send</button>
+    </form>
+</div>

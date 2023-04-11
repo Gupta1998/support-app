@@ -1,0 +1,17 @@
+{
+  "name": "mean-support-app",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Vaibhav Gupta <guptavaibhav102@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

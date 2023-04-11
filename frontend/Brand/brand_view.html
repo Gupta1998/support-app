@@ -1,0 +1,235 @@
+<style>
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: block;
+    }
+
+    .show-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .red {
+        border-left: 15px solid red;
+    }
+
+    .sandbrown {
+        border-left: 15px solid sandybrown;
+    }
+
+    .green {
+        border-left: 15px solid green;
+    }
+
+    .redColor {
+        color: red;
+    }
+
+    .greenColor {
+        color: green;
+    }
+
+    .blueColor {
+        color: rgb(26, 96, 247);
+    }
+
+    .sandbrownColor {
+        color: rgb(243, 143, 55);
+    }
+</style>
+
+<!-- <ng-include src="'header.html'"></ng-include> -->
+
+<header>
+    <nav>
+        <ul>
+            <li style="text-transform: capitalize;">{{loggedInUser.username}}</li>
+            <li>
+                <a ng-click="logout()">Logout</a>
+            </li>
+            <li><i class="fa-solid fa-gear"></i></li>
+            <li>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Agent'">
+                    <img src="../../profile.webp" alt="avatar">
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Admin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'SuperAdmin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<div class="profile-container">
+    <h5><a ui-sref="user_profile({id:LoggedInUserId})">Profile</a></h5>
+    <h5>Go Offline</h5>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div id="addAgent" class="modal-content">
+        <span class="close" ng-click="closeModal()"><i class="fa-sharp fa-solid fa-xmark"></i></span>
+        <h4>Add Admin</h4>
+        <form ng-submit="addAgent()">
+            <h3>Personal Details:</h3>
+            <div class="form-group">
+                <label for="">First Name:</label>
+                <input type="text" class="form-control" name="firstName" ng-model="firstName">
+                <label for="">Last Name:</label>
+                <input type="text" class="form-control" name="lastName" ng-model="lastName">
+                <label for="">Contact No:</label>
+                <input type="text" class="form-control" name="contactNo" ng-model="contactNo">
+            </div>
+            <h3>Credentials:</h3>
+            <div class="form-group">
+                <label for="">Email:</label>
+                <input type="text" class="form-control" name="email" ng-model="email">
+                <label for="">Username:</label>
+                <input type="text" class="form-control" name="username" ng-model="username">
+                <label for="">Password:</label>
+                <input type="text" class="form-control" name="password" ng-model="password">
+            </div>
+            <h3>Permissions:</h3>
+            <div class="form-group">
+                <input type="text" class="form-control-plaintext" ng-model="selected"
+                    placeholder="Select permissions..." readonly>
+                <select name="Permissions" class="form-control" style="height: 100px;" ng-model="selected" multiple>
+                    <option value="Create">Create</option>
+                    <option value="Read">Read</option>
+                    <option value="Update">Update</option>
+                    <option value="Update">Update</option>
+                    <option value="Update">Update</option>
+                    <option value="Update">Update</option>
+                </select>
+            </div>
+            <div class="text-center">
+                <input type="submit" class="btn" value="Add">
+            </div>
+        </form>
+    </div>
+
+    <div id="removeAgent" class="modal-content">
+        <span class="close" ng-click="closeModal()"><i class="fa-sharp fa-solid fa-xmark"></i></span>
+        <h4 style="border-bottom: 1px solid lightgray; margin-bottom: 1rem; padding-bottom: 0.5rem;">Disable Agent</h4>
+        <table class="table" style="border-top: 1px solid lightgray">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="agent in agents">
+                    <td><input type="checkbox" ng-model="agent.selected"></td>
+                    <td>{{agent.firstName}}</td>
+                    <td>{{agent.lastName}}</td>
+                    <td>{{agent.username}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <button ng-click="checkVal()" class="save-btn">Save</button>
+    </div>
+</div>
+
+
+<div id="mySidebar" class="sidebar">
+    <div class="sidebar-container">
+        <div class="sidebar-image">
+            <img id="avatar" alt="Brand Logo">
+        </div>
+        <span class="closebtn" ng-click="closeNav()"><i class="fa-sharp fa-solid fa-xmark"></i></span>
+        <h2 style="color: white;">Hello {{userRole}}!</h2>
+        <ul>
+            <li>
+                <a href="#" ng-click="manageAgents()">Manage Agents</i></a>
+            </li>
+            <ul class="sidebar-submenu hide">
+                <li><a href="#" id="modal1">Add Agent</a></li>
+                <li><a href="#" id="modal2">Remove Agent</a></li>
+                <li><a href="#">Update Agent</a></li>
+            </ul>
+            <li><a href="#" id="modal3">Create Ticket</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Right sidebar -->
+<div id="sidebarRight" class="sidebar-right">
+    <div class="sidebar-container">
+        <span class="closebtn" ng-click="closeRightSidebar()"><i class="fa-sharp fa-solid fa-caret-right"></i></span>
+        <div style="border-bottom: 2px solid lightgray; padding-left: 5px; margin-bottom: 1rem;">
+            <h3>Your Agents</h3>
+        </div>
+        <div class="agent-card" ng-repeat="agent in agents"
+            ng-Class="{'red': agent.assignCount >= 10, 'sandbrown': (agent.assignCount >= 5 && agent.assignCount < 10), 'green': agent.assignCount < 5}">
+            <div class="agent-info">
+                <div class="agent-img">
+                    <img src="../../profile.webp" alt="">
+                </div>
+                <h5>{{agent.username}}</h5>
+            </div>
+            <div class="ticket-count">
+                <h5>({{agent.assignCount}})</h5>
+            </div>
+            <div class="disable-toggle">
+                <label class="switch">
+                    <input id="checkbox" type="checkbox" ng-click="checkValue(agent)" ng-model="agent.checked"
+                        ng-checked="agent.isDisabled === 'false'">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="main">
+
+<div style="width: 80%; margin: 100px auto;">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Created At</th>
+                <th>Disabled</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="brand in brands">
+                <td>{{brand.name}}</td>
+                <td>{{brand.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</td>
+                <td>{{brand.isDisabled}}</td>
+                <td>
+                    <span class="edit" ng-click="edit(brand)"><i class="fa fa-check"></i></span>
+                    <span class="delete" ng-click="delete(brand)"><i class="fa fa-xmark"></i></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+    <div class="arrow_box hide">
+        <div style="text-align: center;" ng-if="notifications.length == 0">
+            <h3>No Notifications!</h3>
+        </div>
+        <div class="notification_panel">
+            <div style=" border-bottom: 1px solid black; margin-bottom: 5px" ng-repeat="notification in notifications">
+                <h3>{{ notification.from.username }}</h3>
+                <div>
+                    <p>{{ notification.message.text }}</p>
+                </div>
+                <h5>{{notification.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</h5>
+                <button ng-click="markAsRead(notification)">Mark as read</button>
+            </div>
+        </div>
+    </div>
+</div>

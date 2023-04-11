@@ -1,0 +1,97 @@
+<div class="card-container">
+    <div class="ticket-card" ng-repeat="ticket in tickets | filter: search " ng-init="$index = (currentPage-1) * itemsPerPage + $index" ng-class="{'selectedClose': (ticket.status === 'Closed'), 'selectedEscalate': (ticket.status === 'Escalated'), 'selectedProgress': (ticket.status === 'In Progress'), 'selectedOpen': (ticket.status === 'Open')}">
+        <div class="source-info">
+            <i ng-if="ticket.source == 'Email'|| ticket.source == 'email'" class="fa-regular fa-envelope"></i>
+            <i ng-if="ticket.source == 'chat' || ticket.source == 'Chat'" class="fa-regular fa-comment"></i>
+            <i ng-if="ticket.source == 'manual'" class="fa-solid fa-person"></i>
+            <i ng-if="ticket.source == 'call'" class="fa-solid fa-phone"></i>
+        </div>
+        <div class="ticket-info">
+            <h3 id="ticketNumber"><a ui-sref="ticketDetails({id:ticket._id})">#{{$index + 1}}
+                    {{ticket.ticketSubject}}</a></h3>
+            <div class="contact-details">
+                <h5>{{ticket.reportedBy.name}}</h5>
+                <h5>{{ticket.reportedBy.companyName}}</h5>
+                <h5>{{ticket.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</h5>
+                <h5>Due: <span am-time-ago="ticket.dueDateTime"></span></h5>
+            </div>
+        </div>
+        <div style="width: 9%; display: flex; align-items: center; justify-content: space-around;">
+            <span class="deleteIcon" ng-click="openConfirmDeleteModal(ticket)" style="height: 20px; width: 50px; cursor: pointer;" ><i class="fa-solid fa-trash"></i></span>
+            <a class="fileTag" href='{{ticket.attachment.fileUrl}}' target="_blank" style="color: #333333; text-decoration: none; margin-top: 6px;"><i
+                    class="fa-solid fa-file"></i>({{ticket.attachment.fileUrl ? 1:0}})</a>
+        </div>
+        <div style="width: 7%; text-align: center;">
+            <h5 class="status"
+                ng-Class="{'redColor': (ticket.status === 'Closed'), 'blueColor': (ticket.status === 'In Progress'), 'greenColor': (ticket.status === 'Open'), 'sandbrownColor': (ticket.status === 'Escalated')}">
+                {{ticket.status}}</h5>
+        </div>
+        <div class="ticket-details">
+            <div>
+                <h5 ng-if="ticket.assignedTo._id"
+                    style="color: #212121; font-weight: 500; margin-bottom: 3px; text-align: center; text-transform: capitalize;">Assigned To:</h5>
+                <h5 ng-if="ticket.status == 'Closed' && ticket.status == 'Resolved' && ticket.status == 'Escalated' && ticket.assignedTo._id"
+                    style="color: #5e5e5e; font-weight: 500; margin-bottom: 3px; text-align: center; text-transform: capitalize;">{{ticket.assignedTo.username}}</h5>
+                <h5 ng-if="!ticket.assignedTo._id && !ticket.ticketRequest.to && !ticket.ticketRequest.accepted" style="color: #212121; font-weight: 500; margin-bottom: 3px; text-align: center;">
+                    Assign Ticket:</h5>            
+                <h5 ng-if=" ticket.status !== 'Closed' && ticket.status !== 'Resolved' && ticket.status !== 'Escalated' && ticket.ticketRequest.to && ticket.ticketRequest.accepted == false" style="color: #212121; font-weight: 500; margin-bottom: 3px; text-align: center;">
+                    Assigning...</h5>            
+                <!-- <select class="dropdown" ng-options="s.username for s in activeAgents" ng-model="selectedAgent"
+                    ng-change="sendTicketRequest(ticket, selectedAgent)" ng-disabled="ticket.assignedTo._id"
+                    ng-show="!ticket.assignedTo._id">
+                    <option value="" class="dropdown-item">--Select--</option>
+                </select> -->
+                <div style=" width: 130px;" ng-show="!ticket.assignedTo._id && ticket.status !== 'Closed' && !ticket.ticketRequest.to && !ticket.ticketRequest.accepted">
+                    <dropdown-select dd-model="selectedAgent" dd-data="activeAgents" dd-change="sendTicketRequest(ticket, selectedAgent)" dd-label="username" ng-model-options="{debounce: 800}" ng-disabled="ticket.assignedTo._id"></dropdown-select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="contact-info">
+            <img src="../../profile.webp" alt="Contact">
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="exampleModalLongTitle">Confirm Delete!</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Are You Sure, You Want to Delete This Ticket?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" ng-click="deleteTicket()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 
+<div class="page-buttons">
+    <button type="button" ng-click="previous()">Previous</button>
+    <span>...</span>
+    <button type="button" ng-click="next()">Next</button>
+</div>
+ -->
+
+
+<nav aria-label="Page navigation example" style="margin-top: 10px; margin-bottom: 0;">
+    <ul class="pagination justify-content-center" style="margin-bottom: 0;">
+        <li class="page-item" ng-click="previous()">
+            <a style="color: black;" class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item"><a style="color: black;" class="page-link" href="#">{{currentPage}}</a></li>
+        <li class="page-item" ng-click="next()">
+            <a style="color: black;" class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,39 @@
+<div style="width: 100%; margin: 0 auto;" class="table-wrapper">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Ticket</th>
+                <th>Created At</th>
+                <th>Category</th>
+                <th>Ticket Status</th>
+                <th>Due Time</th>
+                <th>Request Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="ticket in ticketRequests | filter: search">
+                <td>{{$index + 1}}.</td>
+                <td>{{ticket.ticketSubject}}</td>
+                <td>{{ticket.createdAt| amDateFormat:'DD MMM YYYY hh:mm A'}}</td>
+                <td>{{ticket.category}}</td>
+                <td>{{ticket.status}}</td>
+                <td>{{ticket.dueDateTime | amDateFormat:'DD MMM, YY hh:mm A'}}</td>
+                <td>{{ticket.ticketRequest.type}}</td>
+                <td>
+                    <div class="tick">
+                        <span ng-click="accept(ticket)"><i class="fa-solid fa-check" ></i></span>
+                        <span ng-click="reject(ticket)"><i class="fa-solid fa-xmark"></i></span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- <div class="page-buttons">
+    <button ng-click="ticketReqPrevious()">&#60;&#60;</button>
+    <span>...</span>
+    <button ng-click="ticketReqNext()"> &#62;&#62;</button>
+</div> -->

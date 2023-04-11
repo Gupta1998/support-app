@@ -1,0 +1,458 @@
+<style>
+    .hide {
+        display: none;
+    }
+
+    .show {
+        display: block;
+    }
+
+    .show-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .red {
+        border-left: 15px solid red;
+    }
+
+    .sandbrown {
+        border-left: 15px solid sandybrown;
+    }
+
+    .green {
+        border-left: 15px solid green;
+    }
+
+    .redColor {
+        color: red;
+    }
+
+    .greenColor {
+        color: green;
+    }
+
+    .blueColor {
+        color: rgb(26, 96, 247);
+    }
+
+    .sandbrownColor {
+        color: rgb(243, 143, 55);
+    }
+</style>
+
+<header>
+    <nav>
+        <ul>
+            <li style="text-transform: capitalize;">{{loggedInUser.username}}</li>
+            <li><a ng-click="logout()">Logout</a></li>
+            <li><i class="fa-solid fa-gear"></i></li>
+            <li>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Admin'">
+                    <img src="../../profile.webp" alt="avatar">
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Admin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'SuperAdmin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Add Brand Modal -->
+<div class="modal fade" id="addBrand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Brand</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="addBrand()">
+                <div class="modal-body">
+                    <h3>Brand Details</h3>
+                    <div class="form-group">
+                        <label for="">Name:</label>
+                        <input type="text" class="form-control" name="name" ng-model="newBrand.name">
+                        <label for="">Contact No:</label>
+                        <input type="text" class="form-control" name="contactNo" ng-model="newBrand.contactNo">
+                        <label for="">Email:</label>
+                        <input type="text" class="form-control" name="email" ng-model="newBrand.email">
+                        <label for="">Location:</label>
+                        <input type="text" class="form-control" name="location" ng-model="newBrand.location">
+                        <label for="">Category:</label>
+                        <select class="form-control" ng-model="newBrand.category">
+                            <option value="">--Select--</option>
+                            <option value="food&beverages">Food & Beverages</option>
+                            <option value="fintech">Fintech</option>
+                            <option value="saas">SaaS</option>
+                            <option value="productBased">Product_Based</option>
+                            <option value="serviceBased">Service_Based</option>
+                        </select>
+                        <br>
+                        <label for="">Brand Logo:</label>
+                        <input type="file" id="logo" class="form-control-file" file-model="myFile" accept="image/*">
+                        <!-- <input type="file" class="form-control" id="fileId" accept="image/*" file-model="myFiles($files)" /> -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Brand Modal -->
+<div class="modal fade" id="updateBrand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Brand</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="editBrand()">
+                <div class="modal-body">
+                    <h3>Brand Details</h3>
+                    <div class="form-group">
+                        <label for="">Name:</label>
+                        <input type="text" class="form-control" name="firstName" ng-model="brand.name">
+                        <label for="">Contact No:</label>
+                        <input type="text" class="form-control" name="contactNo" ng-model="brand.contactNo">
+                        <label for="">Email:</label>
+                        <input type="text" class="form-control" name="firstName" ng-model="brand.email">
+                        <label for="">Location:</label>
+                        <input type="text" class="form-control" name="email" ng-model="brand.location">
+                        <label for="">Category:</label>
+                        <select class="form-control" ng-model="brand.category">
+                            <option value="">--Select--</option>
+                            <option value="food&beverages">Food & Beverages</option>
+                            <option value="fintech">Fintech</option>
+                            <option value="saas">SaaS</option>
+                            <option value="productBased">Product_Based</option>
+                            <option value="serviceBased">Service_Based</option>
+                        </select>
+                        <br>
+                        <label for="">Brand Logo:</label>
+                        <input type="file" id="fileInput" class="form-control-file" file-model="brandLogo"
+                            accept=".pdf, .txt, .xlss, .docx, .doc">
+                    </div>                
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Brand Modal -->
+<div class="modal fade" id="removeBrand" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Remove Brand</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table" style="border-top: 1px solid lightgray">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="agent in agents">
+                            <td><input type="checkbox" ng-model="agent.selected"></td>
+                            <td>{{agent.firstName}}</td>
+                            <td>{{agent.lastName}}</td>
+                            <td>{{agent.username}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button ng-click="checkVal()" class="save-btn">Save</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add Admin Modal -->
+<div class="modal fade" id="addAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Admin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="addAdmin()">
+                <div class="modal-body">
+                    <h3>Personal Details:</h3>
+                    <div class="form-group">
+                        <label for="">First Name:</label>
+                        <input type="text" class="form-control" name="firstName" ng-model="newAdmin.firstName">
+                        <label for="">Last Name:</label>
+                        <input type="text" class="form-control" name="lastName" ng-model="newAdmin.lastName">
+                        <label for="">Contact No:</label>
+                        <input type="text" class="form-control" name="contactNo" ng-model="newAdmin.contactNo">
+                    </div>
+                    <h3>Credentials:</h3>
+                    <div class="form-group">
+                        <label for="">Email:</label>
+                        <input type="text" class="form-control" name="email" ng-model="newAdmin.email">
+                        <label for="">Username:</label>
+                        <input type="text" class="form-control" name="username" ng-model="newAdmin.username">
+                        <label for="">Password:</label>
+                        <input type="text" class="form-control" name="password" ng-model="newAdmin.password">
+                    </div>
+                    <h3>Permissions:</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-control-plaintext" ng-model="newAdmin.permissions"
+                            placeholder="Select permissions..." readonly>
+                        <select name="Permissions" class="form-control" style="height: 100px;" ng-model="newAdmin.permissions" multiple>
+                            <option value="Create">Create</option>
+                            <option value="Read">Read</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Admin Modal -->
+<div class="modal fade" id="updateAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Admin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="editAdmin()">
+                <div class="modal-body">
+                    <h3>Personal Details:</h3>
+                    <div class="form-group">
+                        <label for="">First Name:</label>
+                        <input type="text" class="form-control" name="firstName" ng-model="admin.firstName">
+                        <label for="">Last Name:</label>
+                        <input type="text" class="form-control" name="lastName" ng-model="admin.lastName">
+                        <label for="">Contact No:</label>
+                        <input type="text" class="form-control" name="contactNo" ng-model="admin.contactNo">
+                    </div>
+                    <h3>Credentials:</h3>
+                    <div class="form-group">
+                        <label for="">Email:</label>
+                        <input type="text" class="form-control" name="email" ng-model="admin.email">
+                        <label for="">Username:</label>
+                        <input type="text" class="form-control" name="username" ng-model="admin.username">
+                        <label for="">Password:</label>
+                        <input type="text" class="form-control" name="password" ng-model="admin.password">
+                    </div>
+                    <h3>Permissions:</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-control-plaintext" ng-model="admin.selected" placeholder="Select permissions..."
+                            readonly>
+                        <select name="Permissions" class="form-control" style="height: 100px;" ng-model="admin.selected" multiple>
+                            <option value="Create">Create</option>
+                            <option value="Read">Read</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Admin Modal -->
+<div class="modal fade" id="removeAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Remove Admin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table" style="border-top: 1px solid lightgray">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="admin in admins">
+                            <td><input type="checkbox" ng-model="admin.selected"></td>
+                            <td>{{admin.firstName}}</td>
+                            <td>{{admin.lastName}}</td>
+                            <td>{{admin.username}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button ng-click="checkVal()" class="save-btn">Save</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="main">        
+
+    <div id="mySidebar" class="sidebar">
+        <div class="sidebar-container">
+            <div class="sidebar-image">
+                <img id="avatar" alt="Brand Logo">
+            </div>
+            <span class="closebtn" ng-click="closeNav()"><i class="fa-sharp fa-solid fa-xmark"></i></span>
+            <h2 style="color: white;">Hello {{loggedInUser.role}}!</h2>
+            <ul>
+                <li><a href="#" ng-click="manageBrands()">Manage Brands <span><i class="fa-solid fa-angle-down"></i></span></a></li>
+                <ul class="sidebar-submenu" ng-show="showSubMenu">
+                    <li><a href="#" ng-click="OpenAddBrandModal()" data-toggle="modal" data-target="#addBrand">Add Brand</a></li>
+                    <li><a href="#" ng-click="OpenUpdateBrandModal()">Update Brand</a></li>
+                    <li><a href="#" ng-click="OpenRemoveBrandModal()" data-toggle="modal" data-target="#removeBrand">Remove Brand</a></li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Brand Table -->
+    <div style="width: 100%; max-height: 500px; overflow-y: auto; margin-bottom: 20px;">
+        <h3>All Brands</h3>
+        <table class="table table-hover" style="border: 2px solid black;">
+            <thead>
+                <tr>
+                    <th>S.No.</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Disabled</th>
+                    <th>Created At</th>
+                    <th>Add/View Admins</th>
+                    <th>Actions</th>
+                    <th>Logo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="brand in brands" id="item_{{$index}}">
+                    <td>{{$index + 1}}.</td>
+                    <td>{{brand.name}}</td>
+                    <td>{{brand.location}}</td>
+                    <td>{{brand.isDisabled}}</td>
+                    <td>{{brand.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</td>
+                    <td>
+                        <button class="btn btn-danger" ng-click="openAddAdminModal()" style="margin-right: 10px;" data-toggle="modal" data-target="#addAdmin">Add</button>
+                        <button class="btn btn-primary" ng-click="viewAdmins(brand)">View</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-success" ng-click="openEditBrandModal(brand)"  data-toggle="modal" data-target="#updateBrand">Edit</button>
+                    </td>
+                    <td><img src={{brand.logo}} alt="Brand Logo" style="width:80px; height: 50px; display: block; object-fit: cover;"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Brand Admins table -->
+    <div ng-show="showAdmins" style="max-height: 500px; overflow-y: auto; margin-bottom: 20px;">
+        <h3>{{brandName}} Admin(s)</h3>
+        <table class="table table-hover" style="width: 100%; margin: 0 auto; border: 2px solid black;">
+            <thead>
+                <tr>
+                    <th>S.No.</th>
+                    <th>Name</th>
+                    <th>Disabled</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="admin in admins">
+                    <td>{{$index + 1}}.</td>
+                    <td>{{admin.firstName}} {{admin.lastName}}</td>
+                    <td>{{admin.isDisabled}}</td>
+                    <td>{{admin.createdAt | amDateFormat:'DD MMM YYYY hh:mm A'}}</td>
+                    <td>
+                        <button class="btn btn-danger" ng-click="openEditAdminModal(admin)" style="margin-right: 10px;" data-toggle="modal" data-target="#updateAdmin">Edit</button>
+                        <button class="btn btn-primary" ng-click="removeAdmin(admin)" data-toggle="modal" data-target="#removeAdmin">Remove</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- <div id="accordion" style="border:2px solid black;">
+        <div class="card ">
+            <div class="card-header" id="headingOne" style="display: flex; justify-content: space-between; align-items: center;">
+                <h5 class="mb-0">Select</h5>
+                <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
+                    aria-controls="collapseOne">
+                    <i class="fa-solid fa-angle-down"></i>
+                </button>
+            </div>
+    
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf
+                    moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.
+                    Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
+                    shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea
+                    proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim
+                    aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                </div>
+            </div>
+        </div>
+    </div>     -->
+
+</div>

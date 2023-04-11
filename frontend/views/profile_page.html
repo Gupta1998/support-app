@@ -1,0 +1,35 @@
+<div id="UpdateProfile" class="modal-content">
+    <h4>Update Details</h4>
+    <form class="form" style="border-top: 1px solid lightgray;" name="updateProfile" ng-submit="updateUser()">
+        <p>Personal Details:</p>
+        <div class="form-grp">
+            <div>
+                <label for="">First Name:</label>
+                <input type="text" name="firstName" ng-model="firstName">
+            </div>
+            <div>
+                <label for="">Last Name:</label>
+                <input type="text" name="lastName" ng-model="lastName">
+            </div>
+            <div>
+                <label for="">Mobile Number:</label>
+                <input type="number" name="mobileNumber" ng-model="mobileNumber">
+            </div>
+            <div>
+                <label for="">New Password:</label>
+                <input type="password" name="password" ng-model="newPassword">
+            </div>
+            <div>
+                <label for="">Confirm Password:</label>
+                <input type="password" name="confirmPassword" ng-model="confirmPassword">
+            </div>
+        </div>
+        <div class="form-grp form-grp-ticket-details">
+            <div class="form-div">
+                <label for="">Upload Profile Photo:</label>
+                <input type="file" name="file" id="file" style="width: 700px" file-model="myFile">
+            </div>
+        </div>
+        <input type="submit" value="Update">
+    </form>
+</div>

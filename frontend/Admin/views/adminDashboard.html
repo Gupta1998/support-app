@@ -1,0 +1,477 @@
+<style>
+    .hide {
+        display: none;
+    }
+    .show {
+        display: block;
+    }
+    .show-flex {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .red {
+        border-left: 15px solid red;
+    }
+    .sandbrown {
+        border-left: 15px solid sandybrown;
+    }
+    .green {
+        border-left: 15px solid green;
+    }
+    .redColor {
+        color: red;
+    }
+    .greenColor {
+        color: green;
+    }
+    .blueColor {
+        color: rgb(26, 96, 247);
+    }
+    .sandbrownColor {
+        color: rgb(243, 143, 55);
+    }
+    .ticket-card.selectedClose::after {
+    content: "";
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to right, rgba(255, 0, 0, 0), rgba(255, 0, 0, 1));
+}
+    .ticket-card.selectedEscalate::after {
+    content: "";
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to right, rgba(255, 0, 0, 0), rgba(243, 143, 55, 1));
+}
+    .ticket-card.selectedProgress::after {
+    content: "";
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to right, rgba(255, 0, 0, 0), rgba(55, 114, 243, 1));
+}
+    .ticket-card.selectedOpen::after {
+    content: "";
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to right, rgba(255, 0, 0, 0), rgb(33, 140, 35));
+}
+</style>
+
+<header>
+    <nav>
+        <ul>
+            <li style="text-transform: capitalize;">{{loggedInUser.username}}</li>
+            <li>
+                <a ng-click="logout()">Logout</a>
+            </li>
+            <li ng-click="openProfileMenu()"><i class="fa-solid fa-gear"></i></li>
+            <li>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Agent'">
+                    <img src="../../profile.webp" alt="avatar">
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'Admin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                    <div class="online"></div>
+                </div>
+                <div class="profile-img" ng-if="loggedInUser.role == 'SuperAdmin'">
+                    <img src="../../admin-profile.png" alt="avatar">
+                </div>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<div class="profile-container" ng-show="showProfileMenu">
+    <h5><a ui-sref="user_profile({id:LoggedInUserId})">Profile</a></h5>
+    <h5>Go Offline</h5>
+</div>
+
+<!-- Add Agent Modal -->
+<div class="modal fade" id="addAgentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Add Agent</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="addAgent()">
+                <div class="modal-body">
+                    <h3>Personal Details:</h3>
+                    <div class="form-group">
+                        <label for="">First Name:</label>
+                        <input type="text" class="form-control" name="firstName" ng-model="agent.firstName">
+                        <label for="">Last Name:</label>
+                        <input type="text" class="form-control" name="lastName" ng-model="agent.lastName">
+                        <label for="">Contact No:</label>
+                        <input type="text" class="form-control" name="contactNo" ng-model="agent.contactNo">
+                    </div>
+                    <h3>Credentials:</h3>
+                    <div class="form-group">
+                        <label for="">Email:</label>
+                        <input type="text" class="form-control" name="email" ng-model="agent.email">
+                        <label for="">Username:</label>
+                        <input type="text" class="form-control" name="username" ng-model="agent.username">
+                        <label for="">Password:</label>
+                        <input type="text" class="form-control" name="password" ng-model="agent.password">
+                    </div>
+                    <h3>Permissions:</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-control-plaintext" ng-model="agent.selected" placeholder="Add permissions..."
+                            readonly>
+                        <select name="Permissions" class="form-control" style="height: 100px;" ng-model="agent.selected" multiple>
+                            <option value="Create">Create</option>
+                            <option value="Read">Read</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                            <option value="Update">Update</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>    
+        </div>
+    </div>
+</div>
+
+<!-- Create Ticket Modal -->
+<div class="modal fade" id="createTicketodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Create Ticket</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="createTicket()">
+                <div class="modal-body">
+                    <h3>Reporter Details:</h3>
+                    <div class="form-group">
+                        <label for="">Name:</label>
+                        <input type="text" class="form-control" name="firstName" ng-model="ticket.reporterName">
+                        <label for="">Company:</label>
+                        <input type="text" class="form-control" name="lastName" ng-model="ticket.companyName">
+                        <label for="">Contact Details(If any):</label>
+                        <input type="text" class="form-control" name="contactNo" ng-model="ticket.contactNo">
+                    </div>
+                    <h3>Ticket Info:</h3>
+                    <div class="form-group">
+                        <label for="">Source:</label>
+                        <select class="form-control" ng-model="ticket.source">
+                            <option value="">--Select--</option>
+                            <option value="manual">Manual</option>
+                            <option value="call">Call</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Priority:</label>
+                        <select class="form-control" ng-model="ticket.priority">
+                            <option value="">--Select--</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <h3>Ticket Details:</h3>
+                    <div class="form-group">
+                        <label for="">Subject:</label>
+                        <input type="text" class="form-control" placeholder="Add subject..." ng-model="ticket.ticketSubject">
+                        <label for="">Description:</label>
+                        <textarea name="" id="desc" class="form-control" placeholder="Add description..."
+                            ng-model="ticket.ticketDescription"></textarea>
+                        <label for="">Attachments:</label>
+                        <input type="file" id="fileInput" class="form-control-file" file-model="myFile"
+                            accept=".pdf, .txt, .xlss, .docx, .doc">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Create Chat Ticket -->
+<div class="modal fade" id="createChatTicket" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Generate Ticket</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="createChatTicket()">
+                <div class="modal-body">
+                    <h3>Reporter Details:</h3>
+                    <div class="form-group">
+                        <label for="">Name:</label>
+                        <input type="text" class="form-control" name="firstName" ng-model="chatTicket.reporterName" ng-value="receiverDetails.name" readonly>
+                        <label for="">Company:</label>
+                        <input type="text" class="form-control" name="lastName" ng-model="chatTicket.companyName" ng-value="receiverDetails.companyName" readonly>
+                        <label for="">Contact Details(If any):</label>
+                        <input type="text" class="form-control"name="contactNo" ng-model="chatTicket.contactNo">
+                    </div>
+                    <h3>Ticket Details:</h3>
+                    <div class="form-group">
+                            <label for="">Subject:</label>
+                            <input type="text" class="form-control" placeholder="Add subject..." ng-model="chatTicket.ticketSubject">
+                            <label for="">Description:</label>
+                            <textarea name="" id="desc" class="form-control" placeholder="Add description..." ng-model="chatTicket.ticketDescription"></textarea>
+                            <label for="">Attachments:</label>
+                            <input type="file" id="fileInput" class="form-control-file" file-model="myFile" accept=".pdf, .txt, .xlss, .docx, .doc">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Agent Modal -->
+<div class="modal fade" id="removeAgent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Remove Agent(s)</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table" style="border-top: 1px solid lightgray">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="agent in agents">
+                            <td><input type="checkbox" ng-model="agent.selected"></td>
+                            <td>{{agent.firstName}}</td>
+                            <td>{{agent.lastName}}</td>
+                            <td>{{agent.username}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" ng-click="checkVal()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Modal -->
+
+<div class="modal fade" id="filter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Add Filter</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form ng-submit="filterTickets()">
+                <div class="modal-body">
+                    <h3>By Created At</h3>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="">From:</label>
+                            <input type="date" class="form-control" name="fromDate" ng-model="filter.createdAtFrom">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="">To:</label>
+                            <input type="date" class="form-control" name="toDate" ng-model="filter.createdAtTo">
+                        </div>
+                    </div>
+                    <h3>By Due Date</h3>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="">From:</label>
+                            <input type="date" class="form-control" name="fromDate" ng-model="filter.dueDateFrom">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="">To:</label>
+                            <input type="date" class="form-control" name="toDate" ng-model="filter.dueDateTo">
+                        </div>
+                    </div>
+                    <h3>By Agent</h3>
+                    <div class="form-group">
+                        <!-- <label for="">Agent Name:</label> -->
+                        <input type="text" class="form-control" ng-model="filter.agentName" placeholder="Agent Name">
+                    </div>
+                    <h3>By Reporter</h3>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <!-- <label for="">Reporter Name:</label> -->
+                            <input type="text" class="form-control" ng-model="filter.reporterName" placeholder="Reporter Name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <!-- <label for="">Reporter Company:</label> -->
+                            <input type="text" class="form-control" ng-model="filter.reporterCompany" placeholder="Reporter Company">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Apply Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="main"> 
+        <!-- left sidebar -->
+        <div id="mySidebar" class="sidebar">
+            <div class="sidebar-container">
+                <div class="sidebar-image">
+                    <img id="avatar" alt="Brand Logo">
+                </div>
+                <span class="closebtn" ng-click="closeNav()"><i class="fa-sharp fa-solid fa-xmark"></i></span>
+                <h2 style="color: white;">Hello {{userRole}}!</h2>
+                <ul>
+                    <li>
+                        <a href="#" ng-click="showTicketSubMenu = !showTicketSubMenu">Tickets <span><i class="fa-solid fa-angle-down"></i></span></a>
+                    </li>
+                    <ul class="sidebar-submenu" ng-show="showTicketSubMenu">
+                        <li><a ui-sref="admin_dashboard.ticket_list_large" ng-click="showAllTickets()">All Tickets</a></li>
+                        <li><a ui-sref="admin_dashboard.ticket_list_small" ng-click="showQuickTickets()">Tickets Quick View </a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#filter">Filter</a></li>
+                        <li><a href="#" ng-click="openCreateTicketModal()" data-toggle="modal" data-target="#createTicketodal">Create Ticket</a>
+                        </li>
+
+                    </ul>
+                    <li>
+                        <a href="#" ng-click="showAgentsSubMenu = !showAgentsSubMenu">Manage Agents <span><i class="fa-solid fa-angle-down"></i></span></a>
+                    </li>
+                    <ul class="sidebar-submenu" ng-show="showAgentsSubMenu">
+                        <li><a ui-sref="admin_dashboard.all_agents" ng-click="showAllAgents()">All Agents</a></li>
+                        <li><a href="#" data-toggle="modal" data-target="#addAgentModal">Add Agent</a></li>
+                        <li><a href="#" ng-click="openRemoveAgentModal()" data-toggle="modal" data-target="#removeAgent">Remove Agent</a></li>
+                        <!-- <li><a href="#">Update Agent</a></li> -->
+                    </ul>
+                    <li><a ui-sref="admin_dashboard.analytics">Analytics</a></li>
+                </ul>
+            </div>
+        </div>
+
+    <!-- Right sidebar -->
+    <div id="sidebarRight" class="sidebar-right">
+
+        <section class="chat chat-small">
+            <span class="chat-close-btn" ng-click="closeRightSidebar()"><i
+                    class="fa-sharp fa-solid fa-caret-right"></i></span>
+            <div class="header-chat-sm">
+                <i class="icon-sm clickable fa-regular fa-comment" aria-hidden="true"></i>
+                <p class="name-sm">Chats</p>
+                <i class="dots clickable fa fa-ellipsis-h right" aria-hidden="true" data-toggle="modal" data-target="#createChatTicket"></i>
+            </div>
+            <div class="messages-chat messages-chat-small">
+                <div ng-if="receivedMessages.length == 0 && sendMessages.length == 0" style="text-align: center;">
+                    <h3 style="margin-top: 100px;">No Messages!</h3>
+                </div>
+                <div class="message message-sm" ng-repeat="receivedMessage in receivedMessages">
+                    <p class="text text-sm">{{receivedMessage.chat}}</p>
+                    <span class="time time-sm">{{receivedMessage.createdAt}}</span>
+                </div>
+                <div class="message message-sm" ng-repeat="sendMessage in sendMessages">
+                    <div class="response">
+                        <p class="text text-sm"> {{sendMessage.chat}}</p>
+                        <span class="time time-sm">{{sendMessage.createdAt}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-chat-sm">
+                <i class="icon-sm fa-solid fa-paperclip clickable" style="font-size:12pt;" aria-hidden="true"></i>
+                <input type="text" class="write-message-sm" ng-model="messageText"
+                    placeholder="Type your message here"></input>
+                <i ng-click="sendMessage()" class="icon-sm send-sm fa fa-paper-plane-o clickable" aria-hidden="true"></i>
+            </div>
+        </section>
+    </div>
+
+
+    <div class="sub-panel">
+        <div class="text">
+            <span class="openbtn" ng-click="openNav()"><i class="fa-sharp fa-solid fa-bars"></i></span>
+            <h3>{{heading}}</h3>
+        </div>
+        <div class="search-bar">
+            <span><i class="fa-solid fa-magnifying-glass"></i></span>
+            <input type="text" placeholder="Search..." ng-model="search" ng-model-options="{debounce: 800}">
+        </div>
+        <div class="views">
+            <a class="notification">    
+                <span ng-click="openNotificationPanel()"><i class="fa-regular fa-bell"></i></span>
+                <h1 class="badge">{{notifications.length}}</h1>
+            </a>
+            <!-- <span ng-click="openFilterModal()"><i class="fa-solid fa-filter" data-toggle="modal" data-target="#filter"></i></span>
+            <span><a ui-sref="admin_dashboard.ticket_list_large" ng-click="showAllTickets()"><i class="fa-regular fa-solid fa-list" style="color: #000"></i></a></span>
+            <span><a ui-sref="admin_dashboard.ticket_list_small" ng-click="showQuickTickets()"><i class="fa-regular fa-solid fa-table-list" style="color: #000"></i></a></span> -->
+            <span ng-click="openRightSidebar()"><i class="fa-solid fa-ellipsis"></i></span>
+        </div>
+    </div>
+
+    <ui-view></ui-view>
+
+    <!-- notification -->
+    <!-- <div class="arrow_box hide">
+        <div style="text-align: center;" ng-if="notifications.length == 0">
+            <h3>No Notifications!</h3>
+        </div>
+        <div class="notification_panel" ng-if="notifications.length !== 0">
+                <div class="notification_card" ng-repeat="notification in notifications">
+                    <h3>{{ notification.from.username }}</h3>
+                    <div class="notification_msg">
+                        <p>{{ notification.message }}</p>
+                        <h5>{{notification.createdAt | amDateFormat:'DD MMM HH:mm'}}</h5>
+                    </div>
+                    <button ng-click="markAsRead(notification)">Mark as read</button>
+                </div>
+        </div>
+    </div> -->
+
+    <div class="notifications hide" id="box">
+        <h2>Notifications</h2>
+        <div class="notifications-item" ng-repeat="notification in notifications"> 
+            <img src="../../../profile.webp" alt="img">
+            <div class="text">
+                <h4>{{ notification.from.username }}</h4>
+                <p>{{ notification.message }}</p>
+            </div>
+        </div>
+    </div>  
+
+</div>
+    
